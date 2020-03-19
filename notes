@@ -1,0 +1,61 @@
+
+/opt/couchdb/etc/local.ini
+revise sections:
+
+[chttpd]
+port = 5984
+# bind_address = 192.168.10.30
+bind_address = 0.0.0.0
+
+[admins]
+# set password
+admin = secret
+
+
+couchdb_admins_admin_secret: strongPassword
+couchdb_chttpd_port: 5984
+couchdb_chttpd_bind_address: 0.0.0.0
+
+- name: Ensure "port is in section "[chttpd]" in specified file
+  ini_file:
+    path: /opt/couchdb/etc/local.ini
+    section: chttpd
+    option: port
+    value: {{ couchdb_chttpd_port }}
+
+- name: Ensure "bind_address is in section "[chttpd]" in specified file
+  ini_file:
+    path: /opt/couchdb/etc/local.ini
+    section: chttpd
+    option: bind_address
+    value: {{ couchdb_chttpd_bind_address }}
+
+- name: Ensure "admin = strongPassword is in section "[admins]" in specified file
+  ini_file:
+    path: /opt/couchdb/etc/local.ini
+    section: admins
+    option: admin
+    value: {{ couchdb_admins_admin_secret }}
+
+
+https://docs.ansible.com/ansible/latest/modules/ini_file_module.html
+
+Examples:
+
+- name: Ensure "fav=lemonade is in section "[drinks]" in specified file
+  ini_file:
+    path: /etc/conf
+    section: drinks
+    option: fav
+    value: lemonade
+    mode: '0600'
+    backup: yes
+
+- name: Ensure "temperature=cold is in section "[drinks]" in specified file
+  ini_file:
+    path: /etc/anotherconf
+    section: drinks
+    option: temperature
+    value: cold
+    backup: yes
+

@@ -1,0 +1,37 @@
+---
+- name: Apache Couchdb yum repo
+  copy:
+    src: files/apache-couchdb.repo
+    dest: /etc/yum.repos.d/apache-couchdb.repo
+    owner: root
+    group: root
+
+- name: Insall couchdb
+  yum:
+    name: couchdb
+    state: present
+
+- name: Ensure port is in section "[chttpd]" in specified file
+  ini_file:
+    path: /opt/couchdb/etc/local.ini
+    section: chttpd
+    option: port
+    value: "{{ couchdb_chttpd_port }}"
+
+- name: Ensure bind_address is in section "[chttpd]" in specified file
+  ini_file:
+    path: /opt/couchdb/etc/local.ini
+    section: chttpd
+    option: bind_address
+    value: "{{ couchdb_chttpd_bind_address }}"
+
+- name: Ensure admin = strongPassword is in section "[admins]" in specified file
+  ini_file:
+    path: /opt/couchdb/etc/local.ini
+    section: admins
+    option: admin
+    value: "{{ couchdb_admins_admin_secret }}"
+
+- name: Ensure service is started
+  service: name=couchdb state=started enabled=yes
+
